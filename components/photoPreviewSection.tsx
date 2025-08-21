@@ -31,7 +31,8 @@ const PhotoPreviewSection = ({
 
       const data = await response.json();
       Alert.alert('Success', 'Photo uploaded with ID: ' + data.photoId);
-      handleRetakePhoto(); // clear preview after upload
+      handleRetakePhoto();
+       // clear preview after upload
     } catch (error) {
       console.error(error);
       Alert.alert('Error', 'Failed to upload photo');
