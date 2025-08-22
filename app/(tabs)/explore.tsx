@@ -17,7 +17,6 @@ type PhotoType = {
 export default function TabTwoScreen() {
   const [photos, setPhotos] = useState<PhotoType[]>([]);
   const [loading, setLoading] = useState(true);
-  
 
   useEffect(() => {
     const fetchPhotos = async () => {
