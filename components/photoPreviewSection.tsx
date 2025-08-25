@@ -23,7 +23,7 @@ const PhotoPreviewSection = ({
   const handleUpload = async () => {
     setUploading(true);
     try {
-      const response = await fetch('http://192.168.1.145:3000/upload', { 
+      const response = await fetch('https://pinna-api.onrender.com/upload', { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ image: photo.base64 }),
