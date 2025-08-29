@@ -1,12 +1,12 @@
-import { Image } from 'expo-image';
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Image } from "expo-image";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
 
-import { Collapsible } from '@/components/Collapsible';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { IconSymbol } from '@/components/ui/IconSymbol';
+import { Collapsible } from "@/components/Collapsible";
+import ParallaxScrollView from "@/components/ParallaxScrollView";
+import { ThemedText } from "@/components/ThemedText";
+import { ThemedView } from "@/components/ThemedView";
+import { IconSymbol } from "@/components/ui/IconSymbol";
 
 type PhotoType = {
   _id: string;
@@ -21,11 +21,12 @@ export default function TabTwoScreen() {
   useEffect(() => {
     const fetchPhotos = async () => {
       try {
-        const response = await fetch('https://pinna-api.onrender.com/photos'); // Replace with your LAN IP
+        //const response = await fetch("https://pinna-api.onrender.com/photos");
+        const response = await fetch("http://192.168.0.101:3000/photos"); // Replace with your LAN IP
         const data = await response.json();
         setPhotos(data);
       } catch (err) {
-        console.error('Failed to fetch photos:', err);
+        console.error("Failed to fetch photos:", err);
       } finally {
         setLoading(false);
       }
@@ -36,7 +37,7 @@ export default function TabTwoScreen() {
 
   return (
     <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
+      headerBackgroundColor={{ light: "#D0D0D0", dark: "#353636" }}
       headerImage={
         <IconSymbol
           size={310}
@@ -60,10 +61,12 @@ export default function TabTwoScreen() {
             {photos.map((photo) => (
               <View key={photo._id} style={styles.photoBox}>
                 <Image
-                  source={{ uri: 'data:image/jpg;base64,' + photo.image }}
+                  source={{ uri: "data:image/jpg;base64," + photo.image }}
                   style={styles.photo}
                 />
-                {photo.filename && <Text style={styles.filename}>{photo.filename}</Text>}
+                {photo.filename && (
+                  <Text style={styles.filename}>{photo.filename}</Text>
+                )}
               </View>
             ))}
           </View>
@@ -73,35 +76,35 @@ export default function TabTwoScreen() {
       {/* Other existing collapsibles */}
       <Collapsible title="Images">
         <ThemedText>
-          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
+          For static images, you can use the{" "}
+          <ThemedText type="defaultSemiBold">@2x</ThemedText> and{" "}
           <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes.
         </ThemedText>
       </Collapsible>
-
     </ParallaxScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   headerImage: {
-    color: '#808080',
+    color: "#808080",
     bottom: -90,
     left: -35,
-    position: 'absolute',
+    position: "absolute",
   },
   titleContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 8,
   },
   photoGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
     gap: 8,
     marginTop: 8,
   },
   photoBox: {
-    alignItems: 'center',
+    alignItems: "center",
     margin: 5,
   },
   photo: {
@@ -111,8 +114,8 @@ const styles = StyleSheet.create({
   },
   filename: {
     marginTop: 4,
-    color: 'black',
+    color: "black",
     fontSize: 12,
-    textAlign: 'center',
+    textAlign: "center",
   },
 });

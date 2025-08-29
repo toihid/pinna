@@ -1,28 +1,47 @@
-import PhotoPreviewSection from "@/components/photoPreviewSection";
 import { AntDesign } from "@expo/vector-icons";
-import { CameraType, CameraView, useCameraPermissions } from "expo-camera";
+import {
+  Camera,
+  CameraType,
+  CameraView,
+  useCameraPermissions,
+} from "expo-camera";
 import { useRef, useState } from "react";
-import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import PhotoPreviewSection from "@/components/photoPreviewSection";
 
-export default function Camera() {
+interface CameraModalProps {
+  onPhotoTaken?: (photo: any) => void; // callback to parent
+  lat: number;
+  lng: number;
+  title: string;
+  description: string;
+}
+
+export default function CameraModalComponent({
+  onPhotoTaken,
+  lat,
+  lng,
+  title,
+  description,
+}: CameraModalProps) {
   const [facing, setFacing] = useState<CameraType>("back");
   const [permission, requestPermission] = useCameraPermissions();
   const [photo, setPhoto] = useState<any>(null);
   const cameraRef = useRef<CameraView | null>(null);
 
-  if (!permission) {
-    // Camera permissions are still loading.
-    return <View />;
-  }
+  if (!permission) return <View />;
 
   if (!permission.granted) {
-    // Camera permissions are not granted yet.
     return (
       <View style={styles.container}>
         <Text style={{ textAlign: "center" }}>
           We need your permission to show the camera
         </Text>
-        <Button onPress={requestPermission} title="grant permission" />
+        <TouchableOpacity onPress={requestPermission}>
+          <Text style={{ color: "blue", textAlign: "center", marginTop: 10 }}>
+            Grant Permission
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -33,26 +52,28 @@ export default function Camera() {
 
   const handleTakePhoto = async () => {
     if (cameraRef.current) {
-      const options = {
-        quality: 1,
-        base64: true,
-        exif: false,
-      };
-      const takedPhoto = await cameraRef.current.takePictureAsync(options);
-
-      setPhoto(takedPhoto);
+      const options = { quality: 1, base64: true, exif: false };
+      const takenPhoto = await cameraRef.current.takePictureAsync(options);
+      setPhoto(takenPhoto);
+      if (onPhotoTaken) onPhotoTaken(takenPhoto);
     }
   };
 
   const handleRetakePhoto = () => setPhoto(null);
 
-  if (photo)
+  // Show preview if photo is taken
+  if (photo) {
     return (
       <PhotoPreviewSection
         photo={photo}
         handleRetakePhoto={handleRetakePhoto}
+        lat={lat}
+        lng={lng}
+        title={title}
+        description={description}
       />
     );
+  }
 
   return (
     <View style={styles.container}>
@@ -91,10 +112,5 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     backgroundColor: "gray",
     borderRadius: 10,
-  },
-  text: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "white",
   },
 });
