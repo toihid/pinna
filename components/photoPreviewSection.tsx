@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     zIndex: 999,
-    marginTop: 50,
+    marginTop: 30,
   },
   box: {
     borderRadius: 15,
