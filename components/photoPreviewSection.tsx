@@ -18,6 +18,7 @@ const PhotoPreviewSection = ({
   lng,
   title,
   description,
+  onSaved,
 }: {
   photo: CameraCapturedPicture;
   handleRetakePhoto: () => void;
@@ -25,6 +26,7 @@ const PhotoPreviewSection = ({
   lng: number;
   title: string;
   description: string;
+  onSaved?: () => void;
 }) => {
   const [uploading, setUploading] = useState(false);
 
@@ -40,7 +42,7 @@ const PhotoPreviewSection = ({
         return; // stop execution
       }
       //const response = await fetch("https://pinna-api.onrender.com/upload", {
-      const response = await fetch("http://192.168.0.101:3000/upload", {
+      const response = await fetch("http://192.168.0.101:3000/save", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -53,8 +55,10 @@ const PhotoPreviewSection = ({
       });
 
       const data = await response.json();
-      Alert.alert("Success", "Place saved with title: " + data.title);
+      //Alert.alert("Success", "Place saved with title: " + data.title);
       handleRetakePhoto();
+      onSaved?.();
+      console.log("onSaved callback called"); // <- here
       // clear preview after upload
     } catch (error) {
       console.error(error);
