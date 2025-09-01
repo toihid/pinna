@@ -24,6 +24,7 @@ export default function CameraModalComponent({
   lng,
   title,
   description,
+  onSaved,
 }: CameraModalProps) {
   const [facing, setFacing] = useState<CameraType>("back");
   const [permission, requestPermission] = useCameraPermissions();
@@ -72,6 +73,7 @@ export default function CameraModalComponent({
         lng={lng}
         title={title}
         description={description}
+        onSaved={onSaved}
       />
     );
   }

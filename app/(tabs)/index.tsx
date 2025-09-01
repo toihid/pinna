@@ -11,6 +11,7 @@ import {
   TouchableWithoutFeedback,
   View,
   Modal,
+  Image,
 } from "react-native";
 import MapView, { MapPressEvent, Marker } from "react-native-maps";
 
@@ -34,10 +35,10 @@ export default function MapScreen() {
   const [loading, setLoading] = useState(true);
 
   const fetchPhotos = async () => {
-    console.log("tiggered");
+    console.log("tiggered222");
     try {
       //const response = await fetch("https://pinna-api.onrender.com/photos");
-      const response = await fetch("http://192.168.0.101:3000/places"); // Replace with your LAN IP
+      const response = await fetch("https://pinna-api.onrender.com/places"); // Replace with your LAN IP
       const data = await response.json();
       setPredefinedPins(data);
     } catch (err) {
@@ -49,32 +50,6 @@ export default function MapScreen() {
   useEffect(() => {
     fetchPhotos();
   }, []);
-
-  // Predefined pins (Gothenburg)
-  const predefinedPins222 = [
-    {
-      id: 1,
-      title: "Hisings Kärra School",
-      description: "Local school in Hisings Kärra",
-      latitude: 57.79241,
-      longitude: 11.99581,
-    },
-    {
-      id: 2,
-      title: "Kärra Library",
-      description: "Community library in Hisings Kärra",
-      latitude: 57.79214,
-      longitude: 11.99644,
-    },
-    {
-      id: 3,
-      title: "Kärra Sports Hall",
-      description:
-        "Sports facility in Hisings Kärra (Kärra Sim- och Sporthall)",
-      latitude: 57.79196,
-      longitude: 11.99605,
-    },
-  ];
 
   // Handle location
   useEffect(() => {
@@ -276,6 +251,18 @@ export default function MapScreen() {
                   // Display predefined pin data (read-only)
                   <View style={{ marginTop: 10 }}>
                     <Text>{selectedPin.description}</Text>
+                    <Image
+                      source={{
+                        uri: `https://pinna-api.onrender.com/${selectedPin.image}`,
+                      }}
+                      style={{
+                        width: "100%",
+                        height: 200,
+                        marginTop: 10,
+                        borderRadius: 10,
+                      }}
+                      resizeMode="cover"
+                    />
                   </View>
                 ) : (
                   // Input fields for user-pinned location
