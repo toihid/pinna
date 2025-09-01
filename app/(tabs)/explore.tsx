@@ -22,7 +22,7 @@ export default function TabTwoScreen() {
     const fetchPhotos = async () => {
       try {
         //const response = await fetch("https://pinna-api.onrender.com/photos");
-        const response = await fetch("http://192.168.0.101:3000/places"); // Replace with your LAN IP
+        const response = await fetch("http://192.168.0.101:3000/photos"); // Replace with your LAN IP
         const data = await response.json();
         setPhotos(data);
       } catch (err) {

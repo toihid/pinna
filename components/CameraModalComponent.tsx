@@ -15,7 +15,6 @@ interface CameraModalProps {
   lng: number;
   title: string;
   description: string;
-  onSaved?: () => void; // callback to refresh parent
 }
 
 export default function CameraModalComponent({
