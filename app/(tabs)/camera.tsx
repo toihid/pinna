@@ -50,8 +50,7 @@ export default function Camera() {
     return (
       <PhotoPreviewSection
         photo={photo}
-        handleRetakePhoto={handleRetakePhoto}
-      />
+        handleRetakePhoto={handleRetakePhoto} lat={0} lng={0} title={""} description={""}      />
     );
 
   return (

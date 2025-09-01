@@ -39,8 +39,8 @@ const PhotoPreviewSection = ({
         Alert.alert("Error", "Please enter description");
         return; // stop execution
       }
-      //const response = await fetch("https://pinna-api.onrender.com/upload", {
-      const response = await fetch("http://192.168.0.101:3000/upload", {
+    const response = await fetch("https://pinna-api.onrender.com/upload", {
+      //const response = await fetch("http://192.168.0.101:3000/upload", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
