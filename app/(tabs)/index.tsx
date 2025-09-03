@@ -33,6 +33,7 @@ export default function MapScreen() {
   const [photo, setPhoto] = useState<any>(null);
   const [predefinedPins, setPredefinedPins] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const fetchPhotos = async () => {
     console.log("tiggered222");
@@ -154,6 +155,7 @@ export default function MapScreen() {
   return (
     <View style={styles.container}>
       <MapView
+        key={refreshKey}
         ref={mapRef}
         style={styles.map}
         provider="google"
@@ -166,6 +168,8 @@ export default function MapScreen() {
         }}
         onPress={handleMapPress}
       >
+        {/* Floating Button */}
+
         {/* Current user location */}
         <Marker
           coordinate={{
@@ -199,6 +203,13 @@ export default function MapScreen() {
           />
         )}
       </MapView>
+
+      <TouchableOpacity
+        style={styles.centerButton}
+        onPress={() => setRefreshKey((prev) => prev + 1)}
+      >
+        <Text style={styles.centerButtonText}>🎯</Text>
+      </TouchableOpacity>
 
       {/* Modal */}
       {modalVisible && (
@@ -347,5 +358,24 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 8,
     alignItems: "center",
+  },
+  centerButton: {
+    position: "absolute",
+    bottom: 130,
+    right: "50%",
+    backgroundColor: "#fff",
+    borderRadius: 30,
+    width: 60,
+    height: 60,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  centerButtonText: {
+    fontSize: 40,
   },
 });
