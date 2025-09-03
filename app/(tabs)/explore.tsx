@@ -29,6 +29,7 @@ export default function TabTwoScreen() {
     lng: number;
   } | null>(null);
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0); // trigger re-render
 
   const mapRef = useRef<MapView>(null);
 
@@ -77,19 +78,20 @@ export default function TabTwoScreen() {
     }
   };
 
-  useEffect(() => {
-    const fetchPlaces = async () => {
-      try {
-        const response = await fetch("https://pinna-api.onrender.com/places");
-        const data = await response.json();
-        setPlaces(data);
-      } catch (err) {
-        console.error("Failed to fetch places:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchPlaces = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("https://pinna-api.onrender.com/places");
+      const data = await response.json();
+      setPlaces(data);
+    } catch (err) {
+      console.error("Failed to fetch places:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     const getUserLocation = async () => {
       try {
         const { status } = await Location.requestForegroundPermissionsAsync();
@@ -107,7 +109,7 @@ export default function TabTwoScreen() {
 
     getUserLocation();
     fetchPlaces();
-  }, []);
+  }, [refreshKey]); // refresh places when refreshKey changes
 
   const sortedPlaces = userLocation
     ? [...places].sort(
@@ -209,6 +211,14 @@ export default function TabTwoScreen() {
           )}
         </MapView>
       )}
+
+      {/* Refresh Button */}
+      <TouchableOpacity
+        style={styles.refreshButton}
+        onPress={() => setRefreshKey((prev) => prev + 1)}
+      >
+        <ThemedText style={styles.refreshButtonText}>🔄</ThemedText>
+      </TouchableOpacity>
 
       <ScrollView style={styles.placeList}>
         {loading ? (
@@ -316,4 +326,17 @@ const styles = StyleSheet.create({
     marginTop: 4,
     fontWeight: "600",
   },
+  refreshButton: {
+    position: "absolute",
+    top: 40,
+    right: 30,
+    backgroundColor: "white",
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    alignItems: "center",
+    justifyContent: "center",
+    elevation: 5,
+  },
+  refreshButtonText: { color: "white", fontSize: 24 },
 });
