@@ -50,12 +50,31 @@ export default function TabTwoScreen() {
     return R * c;
   };
 
-  // Open Google Maps / Apple Maps for directions
-  const openGoogleMaps = (lat: number, lng: number) => {
-    const url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=driving`;
-    Linking.openURL(url).catch((err) =>
-      console.error("Failed to open Google Maps:", err)
-    );
+  // Open directions in Google Maps if installed, else fallback
+  const openDirections = async (lat: number, lng: number) => {
+    const googleMapsApp = `comgooglemaps://?daddr=${lat},${lng}&directionsmode=driving`;
+    const googleMapsWeb = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=driving`;
+    const appleMaps = `http://maps.apple.com/?daddr=${lat},${lng}&dirflg=d`;
+
+    try {
+      if (Platform.OS === "ios") {
+        const supported = await Linking.canOpenURL(googleMapsApp);
+        if (supported) {
+          await Linking.openURL(googleMapsApp);
+        } else {
+          await Linking.openURL(appleMaps);
+        }
+      } else {
+        const supported = await Linking.canOpenURL(googleMapsApp);
+        if (supported) {
+          await Linking.openURL(googleMapsApp);
+        } else {
+          await Linking.openURL(googleMapsWeb);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to open map:", err);
+    }
   };
 
   useEffect(() => {
@@ -133,7 +152,6 @@ export default function TabTwoScreen() {
   const handlePlacePress = (place: PlaceType) => {
     setSelectedPlaceId(place.id);
 
-    // Zoom in closer on selected place
     mapRef.current?.animateToRegion(
       {
         latitude: place.latitude,
@@ -166,7 +184,7 @@ export default function TabTwoScreen() {
             >
               <Callout
                 tooltip
-                onPress={() => openGoogleMaps(place.latitude, place.longitude)}
+                onPress={() => openDirections(place.latitude, place.longitude)}
               >
                 <View style={styles.callout}>
                   <ThemedText style={styles.calloutText}>
@@ -260,17 +278,7 @@ export default function TabTwoScreen() {
 const { height } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: "white",
-  },
-  headerText: {
-    textAlign: "center",
-    marginBottom: 16,
-    fontSize: 20,
-    fontWeight: "bold",
-  },
+  container: { flex: 1, padding: 16, backgroundColor: "white" },
   map: {
     width: "100%",
     height: height * 0.35,
@@ -285,18 +293,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     alignItems: "center",
   },
-  calloutText: {
-    fontWeight: "bold",
-    color: "#333",
-  },
-  calloutDirection: {
-    fontWeight: "600",
-    color: "#007AFF",
-    marginTop: 2,
-  },
-  placeList: {
-    flex: 1,
-  },
+  calloutText: { fontWeight: "bold", color: "#333" },
+  calloutDirection: { fontWeight: "600", color: "#007AFF", marginTop: 2 },
+  placeList: { flex: 1 },
   placeCard: {
     backgroundColor: "#ffffff",
     padding: 16,
@@ -308,19 +307,9 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
-  placeHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 6,
-  },
-  placeTitle: {
-    fontSize: 16,
-    color: "#333333",
-  },
-  placeCoords: {
-    fontSize: 14,
-    color: "#666666",
-  },
+  placeHeader: { flexDirection: "row", alignItems: "center", marginBottom: 6 },
+  placeTitle: { fontSize: 16, color: "#333333" },
+  placeCoords: { fontSize: 14, color: "#666666" },
   placeDistance: {
     fontSize: 14,
     color: "#FF6B6B",
